@@ -1,0 +1,154 @@
+setup: |
+  cd intersection && poetry install
+  echo "Done installing project dependencies!"
+---
+
+# Reminder for ^^^:
+# All commands executed in the setup block are done in a
+# one-by-one fashion from the current working directory. This means
+# that there is no history associated with running the commands and
+# thus multiple commands must be run in a single chain.
+
+# perform checks on a file
+- intersection/intersection/main.py:
+    - description: Ensure that the main.py file exists in the intersection/intersection/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for main.py
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Define a function called compute_intersection_list_single
+      check: MatchFileFragment
+      options:
+        fragment: def compute_intersection_list_single
+        count: 1
+        exact: false
+    - description: Define a function called compute_intersection_list_double
+      check: MatchFileFragment
+      options:
+        fragment: def compute_intersection_list_double
+        count: 1
+        exact: false
+    - description: Define a function called compute_intersection_tuple_single
+      check: MatchFileFragment
+      options:
+        fragment: def compute_intersection_tuple_single
+        count: 1
+        exact: false
+    - description: Define a function called compute_intersection_tuple_double
+      check: MatchFileFragment
+      options:
+        fragment: def compute_intersection_tuple_double
+        count: 1
+        exact: false
+    - description: Use the += operator when performing the intersection of two tuples
+      check: MatchFileFragment
+      options:
+        fragment: result +=
+        count: 2
+        exact: false
+    - description: Use the append function when performing the intersection of two lists
+      check: MatchFileFragment
+      options:
+        fragment: result.append(
+        count: 2
+        exact: false
+    - description: Create a sufficient number of docstring (i.e., multiple-line) comments in main.py
+      check: CountMultipleLineComments
+      options:
+        language: "Python"
+        count: 7
+        exact: false
+    - description: Create a sufficient number of single-line comments in main.py
+      check: CountSingleLineComments
+      options:
+        language: "Python"
+        count: 10
+        exact: false
+
+# perform checks on a file
+- intersection/tests/test_intersection.py:
+    - description: Ensure that the test_intersection.py file exists in the intersection/tests/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for test_intersection.py
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Confirm that the test_intersection.py file contains the required number of test cases
+      check: MatchFileFragment
+      options:
+        fragment: test_
+        count: 4
+        exact: true
+    - description: Create a sufficient number of docstring (i.e., multiple-line) comments in test_intersection.py
+      check: CountMultipleLineComments
+      options:
+        language: "Python"
+        count: 5
+        exact: false
+    - description: Create a sufficient number of single-line comments in test_intersection.py to explain test case purpose
+      check: CountSingleLineComments
+      options:
+        language: "Python"
+        count: 3
+        exact: false
+
+# perform checks on a file
+- writing/reflection.md:
+    - description: Ensure that the reflection.md file exists in the writing/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for the reflection
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Delete the 'Add Your Name Here' prompt in the reflection file
+      check: MatchFileFragment
+      options:
+        fragment: "Add Your Name Here"
+        count: 0
+        exact: true
+    - description: Write a minimum number of meaningful words in the reflection
+      check: CountFileWords
+      options:
+        count: 300
+        exact: false
+    - description: Confirm that the markdown file has the correct number of headers
+      check: CountMarkdownTags
+      options:
+        tag: heading
+        count: 14
+        exact: false
+    - description: Confirm that the markdown file has the correct number of fenced code blocks
+      check: CountMarkdownTags
+      options:
+        tag: code_block
+        count: 7
+        exact: false
+
+# run a command
+- description: Pass the source code formatting and linting checks run by ruff
+  command: cd intersection && poetry run task ruff
+
+# run a command
+- description: Pass the linting checks run by mypy
+  command: cd intersection && poetry run task mypy
+
+# run a command
+- description: Pass the linting checks run by pymarkdown
+  command: cd intersection && poetry run task markdownlint
+
+# run a command
+- description: Pass all of the Pytest test cases
+  command: cd intersection && poetry run task test
+
+# count number of commits in the GitHub repository
+- description: Have at least 5 commits in repository
+  check: CountCommits
+  options:
+    count: 7
